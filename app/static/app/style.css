@@ -1,0 +1,108 @@
+* { font-family: Arial, sans-serif; }
+body { width: 1230px; }
+
+div.main-cell {
+    display: inline-block;
+    padding-left: 330px;
+}
+
+a#home-link { position: absolute; padding: 20px; }
+
+#octocat {
+    position: absolute;
+    top: 30px;
+    left: 1150px;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+    margin: 20px;
+}
+
+table.main td { border: 3px solid lightgray; }
+table.main td.rownum { border: none; color: lightgray; padding-right: 8px; }
+
+table.small { float: right; }
+table.small td { border: 1px solid black; padding: 3px 10px; }
+table.small td.yellow { background-color: #FFE700; }
+table.small td.red { color: red; }
+table.small td.bold { font-weight: bold; }
+table.small td.index { border: none; font-size: 70%; }
+
+
+table.inversions { float: right; }
+table.inversions th { font-weight: normal; font-size: 55%; }
+table.inversions td {
+    width: 10px;
+    height: 10px;
+    border: 1px solid black;
+}
+table.inversions td.red { background-color: red; }
+table.inversions td.dummy { border: none; }
+
+
+table.permutation td {
+    border: 1px solid black;
+    background-color: white;
+    padding: 2px;
+}
+table.permutation td.permel {
+    width: 35px;
+    height: 25px;
+    font-size: 20pt;
+    text-align: center;
+}
+table.permutation td.permel.red   { color: red;  font-weight: bold; text-decoration: underline; }
+table.permutation td.permel.green { color: #0a0; font-weight: bold; text-decoration: underline; }
+
+table.permutation td.yellow { background-color: #FFE700; }
+
+table.permutation td.core { background-color: #333; color: white; }
+table.permutation td.core.blue { background-color: #3366CC; }
+
+table.permutation td.index { border: none; font-size: 55%; }
+
+
+table.permutation th {
+    border: 1px solid lightgray;
+    border-right: none;
+    font-weight: normal;
+    color: gray;
+    padding: 0 10px;
+}
+
+input[type='text'] {
+    width: 35px;
+    height: 25px;
+    border: none;
+    background-color: inherit;
+    font-size: 20pt;
+    text-align: center;
+}
+
+
+/*** https://www.w3schools.com/howto/howto_js_alert.asp ***/
+
+/* The alert message box */
+.message {
+  padding: 10px;
+  background-color: lightblue;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

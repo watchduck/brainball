@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainball</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'app/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="message">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<form action="{% url 'check' %}" method="post" autocomplete="off">
+    {% csrf_token %}
+
+    <table class="permutation">
+        <tr class="colors">
+            <th>yellow</th>
+            {% for i in range_13 %}
+                <td><input type="checkbox" name="color-{{i}}" class="index-{{i}}"></td>
+            {% endfor %}
+        </tr>
+        <tr class="numbers">
+            <th>numbers</th>
+            {% for i in range_13 %}
+                <td class="index-{{i}}"><input type="text" name="number-{{i}}"></td>
+            {% endfor %}
+        </tr>
+    </table>
+
+    <br>
+    <input type="submit" value="analyse">
+
+</form>
+
+<script>
+    $(document).ready(function(){
+        $("input[type='checkbox']").click(function(){
+            var thisClass = $(this).attr("class");
+            var thisChecked = $(this).prop("checked");
+            var cell = $('td.' + thisClass);
+            if(thisChecked) {
+                cell.addClass('yellow');
+            } else {
+                cell.removeClass('yellow');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

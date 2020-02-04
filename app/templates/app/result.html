@@ -1,0 +1,195 @@
+{% load index static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainball</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'app/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+<!-- hint how the displayed representation of the current position was derived from the one entered -->
+{% if messages %}
+    {% for message in messages %}
+    <div class="message">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<!-- link to index page -->
+<a href="/" id="home-link">start</a>
+
+<!-- link to GitHub -->
+<div id="octocat">
+    <a href="https://github.com/watchduck/brainball">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/40px-Octicons-mark-github.svg.png" width="40px">
+    </a>
+</div>
+
+<!-- current position -->
+<div class="main-cell">
+
+    <table class="permutation">
+        {% for i in numbers_0_12 %}
+            <td class="permel {% if current.colors|index:i %} yellow {% endif %}"
+                place-index="{{ i|add:1 }}"
+            >
+                {{ current.numbers|index:i }}
+            </td>
+        {% endfor %}
+        </tr>
+        <tr>
+        {% for i in numbers_0_12 %}
+            <td class="index">
+                {{ i|add:1 }}
+            </td>
+        {% endfor %}
+        </tr>
+    </table>
+
+    <table class="small">
+        <tr>
+            <td class="index" colspan="3">current (left) and smallest among twists (right)</td>
+        </tr>
+        <tr>
+            <td class="yellow">yellow</td>
+            <td class="yellow">{{ current.yellow_sum }}</td>
+            <td class="yellow">{{ min_yellow_sum }}</td>
+        </tr>
+        <tr>
+            <td class="red">inversions</td>
+            <td class="red">{{ current.inversion_number }}</td>
+            <td class="red">{{ min_inversion_number }}</td>
+        </tr>
+    </table>
+
+    <table class="inversions">
+        <tr>
+            {% for dummy in current.inversion_set %}
+                <th>{{forloop.counter|add:1}}</th>
+            {% endfor %}
+        </tr>
+        {% for row in current.inversion_set %}
+        <tr>
+            {% if forloop.counter0 > 0 %}
+                <td colspan="{{forloop.counter0}}" class="dummy"></td>
+            {% endif %}
+            {% for cell_bool in row %}
+                <td class="square {% if cell_bool %} red {% endif %}"
+                    row-index="{{forloop.parentloop.counter}}"
+                    col-index="{{ forloop.parentloop.counter|add:forloop.counter }}"
+                ></td>
+            {% endfor %}
+            <th>{{forloop.counter}}</th>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+
+
+<!-- big 13×2 table with all twists of the current position -->
+<table class="main">
+    {% for twist_pair in twists %}
+    <tr>
+        <td class="rownum">{{ forloop.counter0 }}</td>
+        {% for t in twist_pair %}
+        <td class="main-cell">
+
+            <table class="permutation">
+                <tr>
+                {% for i in numbers_0_12 %}
+                    <td class="permel {% if t.before_colors|index:i %} yellow {% endif %}">
+                        {{ t.before_numbers|index:i }}
+                    </td>
+                {% endfor %}
+                </tr>
+                <tr>
+                {% for i in numbers_0_12 %}
+                    <td class="core {% if t.core|index:i %} blue {% endif %}">↧</td>
+                {% endfor %}
+                </tr>
+                {% for i in numbers_0_12 %}
+                    <td class="permel {% if t.colors|index:i %} yellow {% endif %}"
+                        place-index="{{ i|add:1 }}"
+                    >
+                        {{ t.numbers|index:i }}
+                    </td>
+                {% endfor %}
+                </tr>
+                <tr>
+                {% for i in numbers_0_12 %}
+                    <td class="index">
+                        {{ i|add:1 }}
+                    </td>
+                {% endfor %}
+                </tr>
+            </table>
+
+            <a href="{{ t.url }}">go there</a>
+
+            <table class="small">
+                <tr><td class="yellow {% if t.yellow_sum_minimal %}bold{% endif %}">yellow: {{ t.yellow_sum }}</td></tr>
+                <tr><td class="red {% if t.inversion_number_minimal %}bold{% endif %}">inversions: {{ t.inversion_number }}</td></tr>
+            </table>
+
+            <table class="inversions">
+                <tr>
+                    {% for dummy in t.inversion_set %}
+                        <th>{{forloop.counter|add:1}}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in t.inversion_set %}
+                <tr>
+                    {% if forloop.counter0 > 0 %}
+                        <td colspan="{{forloop.counter0}}" class="dummy"></td>
+                    {% endif %}
+                    {% for cell_bool in row %}
+                        <td class="square {% if cell_bool %} red {% endif %}"
+                            row-index="{{forloop.parentloop.counter}}"
+                            col-index="{{ forloop.parentloop.counter|add:forloop.counter }}"
+                        ></td>
+                    {% endfor %}
+                    <th>{{forloop.counter}}</th>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+
+<script>
+    $(document).ready(function(){
+        $("td.square").mouseenter(function(){
+            var rowIndex = $(this).attr("row-index");
+            var colIndex = $(this).attr("col-index");
+
+            var mainCell = $(this).closest(".main-cell");
+            var colorName = $(this).hasClass('red') ? 'red' : 'green';
+
+            var rowPermel = mainCell.find("td.permel[place-index='" + rowIndex + "']");
+            var colPermel = mainCell.find("td.permel[place-index='" + colIndex + "']");
+
+            rowPermel.addClass(colorName);
+            colPermel.addClass(colorName);
+
+            $("td.square").mouseleave(function(){
+                $("td.permel").removeClass(colorName);
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>
